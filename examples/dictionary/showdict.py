@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import print_function
+
 import sys
-import dict
-from pyxb.utils.six.moves.urllib.request import urlopen
-import pyxb.utils.domutils as domutils
+from urllib.request import urlopen
 from xml.dom import minidom
+
+import dict
+
+import pyxb.utils.domutils as domutils
 
 # Get the list of dictionaries available from the service.
 port_uri = 'http://services.aonaware.com/DictService/DictService.asmx'

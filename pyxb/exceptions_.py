@@ -23,6 +23,7 @@ reference it below.
 import pyxb
 from pyxb.utils import six
 
+
 class PyXBException (Exception):
     """Base class for exceptions that indicate a problem that the user should fix."""
 
@@ -62,7 +63,7 @@ class DOMGenerationError (PyXBException):
     """A non-validation error encountered converting bindings to DOM."""
     pass
 
-@six.python_2_unicode_compatible
+
 class UnboundElementError (DOMGenerationError):
     """An instance converting to DOM had no bound element."""
 
@@ -218,7 +219,7 @@ class ValidationError (PyXBException):
         @return: a string description of validation failure"""
         return six.text_type(self)
 
-@six.python_2_unicode_compatible
+
 class NonElementValidationError (ValidationError):
     """Raised when an element (or a value bound to an element) appears
     in context that does not permit an element."""
@@ -239,8 +240,9 @@ class NonElementValidationError (ValidationError):
         super(NonElementValidationError, self).__init__(element, location)
 
     def __str__ (self):
-        import pyxb.binding.basis
         import xml.dom
+
+        import pyxb.binding.basis
         value = ''
         boundto = ''
         location = ''
@@ -267,7 +269,7 @@ class ElementValidationError (ValidationError):
     """Raised when a validation requirement for an element is not satisfied."""
     pass
 
-@six.python_2_unicode_compatible
+
 class AbstractElementError (ElementValidationError):
     """Attempt to create an instance of an abstract element.
 
@@ -304,7 +306,7 @@ class AbstractElementError (ElementValidationError):
     def __str__ (self):
         return six.u('Cannot instantiate abstract element %s directly') % (self.element.name(),)
 
-@six.python_2_unicode_compatible
+
 class ContentInNilInstanceError (ElementValidationError):
     """Raised when an element that is marked to be nil is assigned content."""
 
@@ -345,7 +347,7 @@ class NoNillableSupportError (ElementValidationError):
         self.location = location
         super(NoNillableSupportError, self).__init__(instance, location)
 
-@six.python_2_unicode_compatible
+
 class ElementChangeError (ElementValidationError):
     """Attempt to change an element that has a fixed value constraint."""
 
@@ -375,7 +377,7 @@ class ComplexTypeValidationError (ValidationError):
     """Raised when a validation requirement for a complex type is not satisfied."""
     pass
 
-@six.python_2_unicode_compatible
+
 class AbstractInstantiationError (ComplexTypeValidationError):
     """Attempt to create an instance of an abstract complex type.
 
@@ -410,7 +412,7 @@ class AbstractInstantiationError (ComplexTypeValidationError):
         # If the type is abstract, it has to have a name.
         return six.u('Cannot instantiate abstract type %s directly') % (self.type._ExpandedName,)
 
-@six.python_2_unicode_compatible
+
 class AttributeOnSimpleTypeError (ComplexTypeValidationError):
     """Attempt made to set an attribute on an element with simple type.
 
@@ -447,7 +449,7 @@ class ContentValidationError (ComplexTypeValidationError):
     """Violation of a complex type content model."""
     pass
 
-@six.python_2_unicode_compatible
+
 class ContentNondeterminismExceededError (ContentValidationError):
     """Content validation exceeded the allowed limits of nondeterminism."""
 
@@ -462,7 +464,7 @@ class ContentNondeterminismExceededError (ContentValidationError):
     def __str__ (self):
         return six.u('Nondeterminism exceeded validating %s') % (self.instance._Name(),)
 
-@six.python_2_unicode_compatible
+
 class SimpleContentAbsentError (ContentValidationError):
     """An instance with simple content was not provided with a value."""
 
@@ -479,7 +481,7 @@ class SimpleContentAbsentError (ContentValidationError):
     def __str__ (self):
         return six.u('Type %s requires content') % (self.instance._Name(),)
 
-@six.python_2_unicode_compatible
+
 class ExtraSimpleContentError (ContentValidationError):
     """A complex type with simple content was provided too much content."""
 
@@ -501,7 +503,7 @@ class ExtraSimpleContentError (ContentValidationError):
     def __str__ (self):
         return six.u('Instance of %s already has simple content value assigned') % (self.instance._Name(),)
 
-@six.python_2_unicode_compatible
+
 class NonPluralAppendError (ContentValidationError):
     """Attempt to append to an element which does not accept multiple instances."""
 
@@ -526,7 +528,7 @@ class NonPluralAppendError (ContentValidationError):
     def __str__ (self):
         return six.u('Instance of %s cannot append to element %s') % (self.instance._Name(), self.element_declaration.name())
 
-@six.python_2_unicode_compatible
+
 class MixedContentError (ContentValidationError):
     """Non-element content added to a complex type instance that does not support mixed content."""
 
@@ -550,7 +552,7 @@ class MixedContentError (ContentValidationError):
             return six.u('Invalid non-element content at %s') % (self.location,)
         return six.u('Invalid non-element content')
 
-@six.python_2_unicode_compatible
+
 class UnprocessedKeywordContentError (ContentValidationError):
     """A complex type constructor was provided with keywords that could not be recognized."""
 
@@ -610,7 +612,7 @@ class IncrementalElementContentError (ContentValidationError):
             return self.value.nodeName
         return six.text_type(self.value)
 
-@six.python_2_unicode_compatible
+
 class UnrecognizedContentError (IncrementalElementContentError):
     """Element or element-like content could not be validly associated with an sub-element in the content model.
 
@@ -775,7 +777,7 @@ class InvalidPreferredElementContentError (BatchElementContentError):
         # Bypass immediate parent so we preserve the last argument
         super(BatchElementContentError, self).__init__(instance, fac_configuration, symbols, symbol_set, preferred_symbol)
 
-@six.python_2_unicode_compatible
+
 class OrphanElementContentError (ContentValidationError):
     """An element expected to be used in content is not present in the instance.
 
@@ -804,7 +806,7 @@ class OrphanElementContentError (ContentValidationError):
     def __str__ (self):
         return six.u('Preferred content element not found in instance')
 
-@six.python_2_unicode_compatible
+
 class SimpleTypeValueError (ValidationError):
     """Raised when a simple type value does not satisfy its constraints."""
     type = None
@@ -834,7 +836,7 @@ class SimpleTypeValueError (ValidationError):
             return six.u('Type %s cannot be created from %s: %s') % (self.type._Name(), self.value._Name(), self.value)
         return six.u('Type %s cannot be created from: %s') % (self.type._Name(), self.value)
 
-@six.python_2_unicode_compatible
+
 class SimpleListValueError (SimpleTypeValueError):
     """Raised when a list simple type contains a member that does not satisfy its constraints.
 
@@ -845,7 +847,7 @@ class SimpleListValueError (SimpleTypeValueError):
     def __str__ (self):
         return six.u('Member type %s of list type %s cannot accept %s') % (self.type._ItemType._Name(), self.type._Name(), self.value)
 
-@six.python_2_unicode_compatible
+
 class SimpleUnionValueError (SimpleTypeValueError):
     """Raised when a union simple type contains a member that does not satisfy its constraints.
 
@@ -859,7 +861,7 @@ class SimpleUnionValueError (SimpleTypeValueError):
     def __str__ (self):
         return six.u('No memberType of %s can be constructed from %s') % (self.type._Name(), self.value)
 
-@six.python_2_unicode_compatible
+
 class SimpleFacetValueError (SimpleTypeValueError):
     """Raised when a simple type value does not satisfy a facet constraint.
 
@@ -932,25 +934,25 @@ class AttributeValidationError (ValidationError):
         self.location = location
         super(AttributeValidationError, self).__init__(type, tag, instance, location)
 
-@six.python_2_unicode_compatible
+
 class UnrecognizedAttributeError (AttributeValidationError):
     """Attempt to reference an attribute not sanctioned by content model."""
     def __str__ (self):
         return six.u('Attempt to reference unrecognized attribute %s in type %s') % (self.tag, self.type)
 
-@six.python_2_unicode_compatible
+
 class ProhibitedAttributeError (AttributeValidationError):
     """Raised when an attribute that is prohibited is set or referenced in an element."""
     def __str__ (self):
         return six.u('Attempt to reference prohibited attribute %s in type %s') % (self.tag, self.type)
 
-@six.python_2_unicode_compatible
+
 class MissingAttributeError (AttributeValidationError):
     """Raised when an attribute that is required is missing in an element."""
     def __str__ (self):
         return six.u('Instance of %s lacks required attribute %s') % (self.type, self.tag)
 
-@six.python_2_unicode_compatible
+
 class AttributeChangeError (AttributeValidationError):
     """Attempt to change an attribute that has a fixed value constraint."""
     def __str__ (self):
@@ -963,7 +965,7 @@ class BindingError (PyXBException):
     For example, attempts to extract complex content from a type that
     requires simple content, or vice versa.  """
 
-@six.python_2_unicode_compatible
+
 class NotSimpleContentError (BindingError):
     """An operation that requires simple content was invoked on a
     complex type instance that does not have simple content."""
@@ -981,7 +983,7 @@ class NotSimpleContentError (BindingError):
     def __str__ (self):
         return six.u('type %s does not have simple content') % (self.instance._Name(),)
 
-@six.python_2_unicode_compatible
+
 class NotComplexContentError (BindingError):
     """An operation that requires a content model was invoked on a
     complex type instance that has empty or simple content."""
@@ -998,7 +1000,7 @@ class NotComplexContentError (BindingError):
     def __str__ (self):
         return six.u('type %s has simple/empty content') % (self.instance._Name(),)
 
-@six.python_2_unicode_compatible
+
 class ReservedNameError (BindingError):
     """Reserved name set in binding instance."""
 

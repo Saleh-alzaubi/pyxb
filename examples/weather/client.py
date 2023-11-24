@@ -1,9 +1,12 @@
 from __future__ import print_function
+
 import sys
 import time
-from pyxb.utils.six.moves.urllib import request as urllib_request
-import pyxb.bundles.wssplat.soap11 as soapenv
+from urllib import request as urllib_request
+
 import weather
+
+import pyxb.bundles.wssplat.soap11 as soapenv
 
 zip = 55113
 if 1 < len(sys.argv):

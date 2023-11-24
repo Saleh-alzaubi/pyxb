@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 import logging
+
 if __name__ == '__main__':
     logging.basicConfig()
 _log = logging.getLogger(__name__)
-import pyxb.binding.generate
-import pyxb.binding.datatypes as xs
-import pyxb.binding.basis
-import pyxb.utils.domutils
-from pyxb.utils import six
-from pyxb.namespace.builtin import XMLSchema_instance as XSI
-
 import os.path
+
+import pyxb.binding.basis
+import pyxb.binding.datatypes as xs
+import pyxb.binding.generate
+import pyxb.utils.domutils
+from pyxb.namespace.builtin import XMLSchema_instance as XSI
+from pyxb.utils import six
+
 xsd='''<?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 <xs:complexType name="BaseT" abstract="true"/>
@@ -57,9 +59,10 @@ code = pyxb.binding.generate.GeneratePython(schema_text=xsd)
 rv = compile(code, 'test', 'exec')
 eval(rv)
 
+import unittest
+
 from pyxb.exceptions_ import *
 
-import unittest
 
 class TestTrac_0060 (unittest.TestCase):
     def setUp (self):
@@ -104,7 +107,7 @@ class TestTrac_0060 (unittest.TestCase):
         wc = CreateFromDocument(xmls)
         instance = wc.wildcardElements()[0]
         self.assertTrue(isinstance(instance, Integer))
-        self.assertTrue(isinstance(instance.child, six.long_type))
+        self.assertTrue(isinstance(instance.child, int))
         self.assertEqual(self.AnInteger, instance.child)
 
     def testWildcardIntegerBad (self):
@@ -141,13 +144,13 @@ class TestTrac_0060 (unittest.TestCase):
         wc = CreateFromDocument(xmls)
         instance = wc.wildcardElements()[0]
         self.assertTrue(isinstance(instance, Integer))
-        self.assertTrue(isinstance(instance.child, six.long_type))
+        self.assertTrue(isinstance(instance.child, int))
         self.assertEqual(self.AnInteger, instance.child)
         dom = pyxb.utils.domutils.StringToDOM(xmls)
         wc = CreateFromDOM(dom)
         instance = wc.wildcardElements()[0]
         self.assertTrue(isinstance(instance, Integer))
-        self.assertTrue(isinstance(instance.child, six.long_type))
+        self.assertTrue(isinstance(instance.child, int))
         self.assertEqual(self.AnInteger, instance.child)
 
     def testStrict (self):
@@ -227,13 +230,13 @@ class TestTrac_0060 (unittest.TestCase):
         wc = CreateFromDocument(xmls)
         instance = wc.wildcardElements()[0]
         self.assertTrue(isinstance(instance, Integer))
-        self.assertTrue(isinstance(instance.child, six.long_type))
+        self.assertTrue(isinstance(instance.child, int))
         self.assertEqual(self.AnInteger, instance.child)
         dom = pyxb.utils.domutils.StringToDOM(xmls)
         wc = CreateFromDOM(dom)
         instance = wc.wildcardElements()[0]
         self.assertTrue(isinstance(instance, Integer))
-        self.assertTrue(isinstance(instance.child, six.long_type))
+        self.assertTrue(isinstance(instance.child, int))
         self.assertEqual(self.AnInteger, instance.child)
 
         xmls = self.makeWC(self.BaseUntyped)
@@ -294,13 +297,13 @@ class TestTrac_0060 (unittest.TestCase):
         wc = CreateFromDocument(xmls)
         instance = wc.wildcardElements()[0]
         self.assertTrue(isinstance(instance, Integer))
-        self.assertTrue(isinstance(instance.child, six.long_type))
+        self.assertTrue(isinstance(instance.child, int))
         self.assertEqual(self.AnInteger, instance.child)
         dom = pyxb.utils.domutils.StringToDOM(xmls)
         wc = CreateFromDOM(dom)
         instance = wc.wildcardElements()[0]
         self.assertTrue(isinstance(instance, Integer))
-        self.assertTrue(isinstance(instance.child, six.long_type))
+        self.assertTrue(isinstance(instance.child, int))
         self.assertEqual(self.AnInteger, instance.child)
 
         xmls = self.makeWC(self.BaseUntyped)

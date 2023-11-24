@@ -1,12 +1,15 @@
 from __future__ import print_function
-import xml.dom.minidom
-import DWML
-import datetime
-import pyxb.binding.datatypes as xsd
-from pyxb.utils.six.moves.urllib.request import urlopen
-import time
+
 import collections
+import datetime
 import sys
+import time
+import xml.dom.minidom
+from urllib.request import urlopen
+
+import DWML
+
+import pyxb.binding.datatypes as xsd
 
 # Get the next seven days forecast for two locations
 zip = [ 85711, 55108 ]

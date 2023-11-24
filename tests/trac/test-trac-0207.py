@@ -1,14 +1,16 @@
 # -*- coding: utf-8 -*-
 import logging
+
 if __name__ == '__main__':
     logging.basicConfig()
 _log = logging.getLogger(__name__)
-import pyxb
-import pyxb.utils.utility
-import pyxb.binding.datatypes as xsd
-from pyxb.utils.six.moves import cPickle as pickle
-
+import pickle
 import unittest
+
+import pyxb
+import pyxb.binding.datatypes as xsd
+import pyxb.utils.utility
+
 
 class TestTrac0207 (unittest.TestCase):
 

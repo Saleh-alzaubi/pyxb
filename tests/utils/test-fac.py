@@ -1,8 +1,9 @@
-import unittest
 import sys
-from pyxb.utils.fac import *
+import unittest
+
 from pyxb.utils import six
-from pyxb.utils.six.moves import xrange
+from pyxb.utils.fac import *
+
 
 class TestFAC (unittest.TestCase):
     a = Symbol('a')
@@ -288,7 +289,7 @@ class TestFAC (unittest.TestCase):
         self.assertTrue(cfg.isAccepting())
         cfg = cfg.step('t')
         self.assertFalse(cfg.isAccepting())
-        for _ in xrange(12):
+        for _ in range(12):
             cfg = cfg.step('m')
         self.assertTrue(cfg.isAccepting())
         self.assertRaises(UnrecognizedSymbolError, cfg.step, 'm')

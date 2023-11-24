@@ -1,11 +1,14 @@
 from __future__ import print_function
+
 import sys
-from pyxb.utils.six.moves.urllib import request as urllib_request
+from urllib import request as urllib_request
+
 import GeoCoder
-from pyxb import BIND
-from pyxb.utils import domutils
+
 import pyxb.bundles.wssplat.soap11 as soapenv
 import pyxb.bundles.wssplat.soapenc as soapenc
+from pyxb import BIND
+from pyxb.utils import domutils
 
 address = '1600 Pennsylvania Ave., Washington, DC'
 if 1 < len(sys.argv):

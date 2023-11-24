@@ -1,13 +1,16 @@
 from __future__ import print_function
-import time
-import sys
-import DWML
+
 import datetime
+import sys
+import time
+from urllib import request as urllib_request
+
+import DWML
+
 import pyxb
-from pyxb.utils import domutils, six
-from pyxb.utils.six.moves.urllib import request as urllib_request
 import pyxb.binding.datatypes as xsd
 import pyxb.bundles.wssplat.soap11 as soapenv
+from pyxb.utils import domutils, six
 
 today = xsd.dateTime.today()
 later = today + datetime.timedelta(days=7)
@@ -30,6 +33,7 @@ import ndfd
 # model for it before, and we need the definition maps in order to
 # resolve part type references in the WSDL messages.
 import pyxb.bundles.wssplat.wsdl11 as wsdl
+
 uri_src = open('ndfdXML.wsdl')
 doc = domutils.StringToDOM(uri_src.read())
 spec = wsdl.definitions.createFromDOM(doc.documentElement, process_schema=True)

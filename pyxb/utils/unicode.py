@@ -32,11 +32,11 @@ and refers to U{Unicode Standard Annex #27: Unicode 3.1
 <http://www.unicode.org/unicode/reports/tr27/>}.
 """
 
-import re
 import logging
+import re
+
 import pyxb.utils.utility
 from pyxb.utils import six
-from pyxb.utils.six.moves import xrange
 
 _log = logging.getLogger(__name__)
 
@@ -48,6 +48,7 @@ except:
     pass
 
 import bisect
+
 
 class CodePointSetError (LookupError):
     """Raised when some abuse of a L{CodePointSet} is detected."""
@@ -254,7 +255,7 @@ class CodePointSet (object):
 
         rv = []
         start = None
-        for ri in xrange(len(self.__codepoints)):
+        for ri in range(len(self.__codepoints)):
             if start is not None:
                 rv.append( (start, self.__codepoints[ri]-1) )
                 start = None
@@ -281,8 +282,8 @@ class CodePointSet (object):
             return None
         return six.unichr(self.__codepoints[0])
 
-from pyxb.utils.unicode_data import PropertyMap
-from pyxb.utils.unicode_data import BlockMap
+from pyxb.utils.unicode_data import BlockMap, PropertyMap
+
 
 class XML1p0e2 (object):
     """Regular expression support for XML Schema Data Types.

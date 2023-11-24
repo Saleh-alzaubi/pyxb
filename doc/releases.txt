@@ -31,6 +31,17 @@ in PyXB 1.2.4.  :ticket:`support for XML Schema 1.1 <217>` will not be addressed
 until PyXB 1.3.0 if at all.
 
 
+2.0.x
+=====
+Python3
+
+.. _pyxb-2.0.0:
+
+2.0.0 (24 Nov 2023)
+-------------------
+Updated for python 3.11
+
+
 1.2.x
 =====
 

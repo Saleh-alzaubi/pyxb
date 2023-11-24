@@ -16,14 +16,15 @@
 """This module contains support classes from which schema-specific bindings
 inherit, and that describe the content models of those schema."""
 
-import logging
 import collections
+import decimal
+import logging
 import xml.dom
+
 import pyxb
-from pyxb.utils import domutils, utility, six
 import pyxb.namespace
 from pyxb.namespace.builtin import XMLSchema_instance as XSI
-import decimal
+from pyxb.utils import domutils, six, utility
 
 _log = logging.getLogger(__name__)
 
@@ -387,7 +388,7 @@ class _TypeBinding_mixin (utility.Locatable_mixin):
 
         # See if we have a numeric type that needs to be cast across the
         # numeric hierarchy.  int to long is the *only* conversion we accept.
-        if isinstance(value, int) and issubclass(cls, six.long_type):
+        if isinstance(value, int) and issubclass(cls, int):
             return cls(value)
 
         # Same, but for boolean, which Python won't let us subclass
@@ -1313,7 +1314,7 @@ class STD_union (simpleTypeDefinition):
         return cls._ValidatedMember(value).xsdLiteral()
 
 
-class STD_list (simpleTypeDefinition, six.list_type):
+class STD_list (simpleTypeDefinition, list):
     """Base class for collection datatypes.
 
     This class descends from the Python list type, and incorporates

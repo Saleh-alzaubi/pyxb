@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import print_function
 import pyxb.namespace
@@ -42,5 +42,5 @@ for fn in sys.argv[1:]:
                 print('   - %s %d items' % (c, len(k)))
 
 # LocalVariables:
-# mode:python
+# mode:python3
 # End:

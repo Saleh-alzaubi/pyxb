@@ -26,6 +26,7 @@ submodules:
 """
 
 import logging
+
 from pyxb.utils import six
 
 _log = logging.getLogger(__name__)
@@ -61,7 +62,7 @@ class cscRoot (object):
         if issubclass(self.__class__.mro()[-2], ( list, dict )):
             super(cscRoot, self).__init__(*args)
 
-__version__ = '1.2.6'
+__version__ = '2.0.0'
 """The version of PyXB"""
 
 __url__ = 'http://pyxb.sourceforge.net'
@@ -69,11 +70,12 @@ __url__ = 'http://pyxb.sourceforge.net'
 
 __license__ = 'Apache License 2.0'
 
+# Bring in namespace stuff
+import pyxb.namespace
+
 # Bring in the exception hierarchy
 from pyxb.exceptions_ import *
 
-# Bring in namespace stuff
-import pyxb.namespace
 
 class BIND (object):
     """Bundle data for automated binding generation.

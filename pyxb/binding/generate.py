@@ -17,19 +17,19 @@
 whole thing is going to be refactored once customized generation makes
 it to the top of the task queue."""
 
-import sys
-import os.path
-import logging
-import logging.config
-import io
 import datetime
 import errno
+import io
+import logging
+import logging.config
+import os.path
+import sys
 
 import pyxb
 import pyxb.xmlschema as xs
-from pyxb.utils import utility, templates, six
-from pyxb.utils.utility import repr2to3
 from pyxb.binding import basis, datatypes, facets
+from pyxb.utils import six, templates, utility
+from pyxb.utils.utility import repr2to3
 
 _log = logging.getLogger(__name__)
 
@@ -192,11 +192,11 @@ class ReferenceEnumerationMember (ReferenceLiteral):
 
 def pythonLiteral (value, **kw):
     # For dictionaries, apply translation to all values (not keys)
-    if isinstance(value, six.dictionary_type):
+    if isinstance(value, dict):
         return ', '.join([ '%s=%s' % (k, pythonLiteral(v, **kw)) for (k, v) in six.iteritems(value) ])
 
     # For lists, apply translation to all members
-    if isinstance(value, six.list_type):
+    if isinstance(value, list):
         return [ pythonLiteral(_v, **kw) for _v in value ]
 
     # ExpandedName is a tuple, but not here
@@ -204,7 +204,7 @@ def pythonLiteral (value, **kw):
         return pythonLiteral(ReferenceExpandedName(expanded_name=value, **kw))
 
     # For other collection types, do what you do for list
-    if isinstance(value, (six.tuple_type, set)):
+    if isinstance(value, (tuple, set)):
         return type(value)(pythonLiteral(list(value), **kw))
 
     # Value is a binding value for which there should be an
@@ -255,7 +255,7 @@ def pythonLiteral (value, **kw):
         return repr2to3(value.uri())
 
     # Standard Python types, including string types
-    if isinstance(value, (six.none_type, six.boolean_type, six.float_type, six.integer_types, six.string_types)):
+    if isinstance(value, (type(None), bool, float, six.integer_types, six.string_types)):
         return pyxb.utils.utility.repr2to3(value)
 
     raise Exception('Unexpected literal type %s' % (type(value),))
@@ -598,9 +598,10 @@ def elementDeclarationMap (ed, binding_module, **kw):
 
     return template_map
 
-import pyxb.utils.fac
-import operator
 import functools
+import operator
+
+import pyxb.utils.fac
 
 # A Symbol in the term tree is a pair consisting of the containing
 # particle (for location information) and one of an
@@ -1826,6 +1827,7 @@ def GeneratePython (schema_location=None,
 
 import optparse
 import re
+
 
 class Generator (object):
     """Configuration and data for a single binding-generation action."""
