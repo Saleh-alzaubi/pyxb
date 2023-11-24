@@ -1,12 +1,15 @@
 from __future__ import print_function
-import xml.dom.minidom
-import DWML
-import datetime
-import pyxb.binding.datatypes as xsd
-from pyxb.utils.six.moves.urllib.request import urlopen
-import time
+
 import collections
+import datetime
 import sys
+import time
+import xml.dom.minidom
+from urllib.request import urlopen
+
+import DWML
+
+import pyxb.binding.datatypes as xsd
 
 # Get the next seven days forecast for two locations
 zip = [ 85711, 55108 ]
@@ -32,7 +35,7 @@ print('%s %s' % (product.title, product.category))
 source = r.head.source
 print(", ".join(source.production_center.content()))
 data = r.data
-if isinstance(data, collections.MutableSequence):
+if isinstance(data, collections.abc.MutableSequence):
     data = data.pop(0)
 print(data)
 

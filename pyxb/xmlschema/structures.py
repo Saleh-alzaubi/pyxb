@@ -32,21 +32,20 @@ basic fields, though all these must support namespaces.
 
 """
 
-import re
-import logging
-from xml.dom import Node
 import copy
-from pyxb.utils.six.moves.urllib import parse as urlparse
+import logging
 import os.path
+import re
+from urllib import parse as urlparse
+from xml.dom import Node
 
 import pyxb
-import pyxb.xmlschema
 import pyxb.namespace.archive
 import pyxb.namespace.resolution
-
+import pyxb.utils.utility
+import pyxb.xmlschema
 from pyxb.binding import basis, datatypes, facets
 from pyxb.utils import domutils, six
-import pyxb.utils.utility
 
 _log = logging.getLogger(__name__)
 
@@ -55,6 +54,7 @@ _PastAddBuiltInTypes = False
 
 # Make it easier to check node names in the XMLSchema namespace
 from pyxb.namespace import XMLSchema as xsd
+
 
 class _SchemaComponent_mixin (pyxb.namespace._ComponentDependency_mixin,
                               pyxb.namespace.archive._ArchivableObject_mixin,
@@ -3728,7 +3728,7 @@ class SimpleTypeDefinition (_SchemaComponent_mixin, _NamedComponent_mixin, pyxb.
     # including those constraints inherited parent types.
     __facets = None
     def facets (self):
-        assert (self.__facets is None) or isinstance(self.__facets, six.dictionary_type)
+        assert (self.__facets is None) or isinstance(self.__facets, dict)
         return self.__facets
 
     # The facets.FundamentalFacet instances that describe this type
@@ -4242,7 +4242,7 @@ class SimpleTypeDefinition (_SchemaComponent_mixin, _NamedComponent_mixin, pyxb.
         if 0 < len(facet_map):
             assert self.__baseTypeDefinition == self.SimpleUrTypeDefinition()
             self.__facets = facet_map
-            assert isinstance(self.__facets, six.dictionary_type)
+            assert isinstance(self.__facets, dict)
         if 0 < len(fundamental_facets):
             self.__fundamentalFacets = frozenset(fundamental_facets)
         return self
@@ -4290,14 +4290,14 @@ class SimpleTypeDefinition (_SchemaComponent_mixin, _NamedComponent_mixin, pyxb.
             if pstd != datatypes.anySimpleType:
                 base_facets.update(pstd._FacetMap())
         elif self.__baseTypeDefinition.facets():
-            assert isinstance(self.__baseTypeDefinition.facets(), six.dictionary_type)
+            assert isinstance(self.__baseTypeDefinition.facets(), dict)
             base_facets.update(self.__baseTypeDefinition.facets())
         base_facets.update(self.facets())
 
         self.__facets = self.__localFacets
         for fc in six.iterkeys(base_facets):
             self.__facets.setdefault(fc, base_facets[fc])
-        assert isinstance(self.__facets, six.dictionary_type)
+        assert isinstance(self.__facets, dict)
 
     def _createRestriction (self, owner, body):
         """Create a new simple type with this as its base.
@@ -5228,7 +5228,9 @@ def _AddSimpleTypes (namespace):
     return schema
 
 import sys
+
 import pyxb.namespace.builtin
+
 pyxb.namespace.builtin._InitializeBuiltinNamespaces(sys.modules[__name__])
 
 ## Local Variables:

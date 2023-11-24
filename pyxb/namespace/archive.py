@@ -19,6 +19,7 @@ Namespaces<http://www.w3.org/TR/2006/REC-xml-names-20060816/index.html>}."""
 import logging
 import os
 import os.path
+
 import pyxb
 import pyxb.utils.utility
 from pyxb.utils import six
@@ -45,8 +46,9 @@ def GetArchivePath ():
     return os.environ.get(PathEnvironmentVariable)
 
 # Stuff required for pickling
-from pyxb.utils.six.moves import cPickle as pickle
+import pickle
 import re
+
 
 class NamespaceArchive (object):
     """Represent a file from which one or more namespaces can be read, or to

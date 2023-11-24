@@ -43,16 +43,19 @@ instance of either SimpleTypeDefinition or ComplexTypeDefinition.
 
 """
 
-import logging
-import re
-import binascii
 import base64
-import math
+import binascii
 import decimal as python_decimal
-from pyxb.exceptions_ import *
+import logging
+import math
+import re
+
 import pyxb.namespace
 import pyxb.utils.unicode
+from pyxb.exceptions_ import *
 from pyxb.utils import six
+from pyxb.utils.typeutils import make_base_dt
+
 from . import basis
 
 _log = logging.getLogger(__name__)
@@ -93,8 +96,8 @@ _PrimitiveDatatypes.append(string)
 
 # It is illegal to subclass the bool type in Python, so we subclass
 # int instead.
-@six.python_2_unicode_compatible
-class boolean (basis.simpleTypeDefinition, six.int_type, basis._NoNullaryNonNillableNew_mixin):
+
+class boolean (basis.simpleTypeDefinition, int, basis._NoNullaryNonNillableNew_mixin):
     """XMLSchema datatype U{boolean<http://www.w3.org/TR/xmlschema-2/#boolean>}."""
     _XsdBaseType = anySimpleType
     _ExpandedName = pyxb.namespace.XMLSchema.createExpandedName('boolean')
@@ -140,7 +143,7 @@ class decimal (basis.simpleTypeDefinition, python_decimal.Decimal, basis._Repres
     def __new__ (cls, *args, **kw):
         args = cls._ConvertArguments(args, kw)
         # Pre Python 2.7 can't construct from float values
-        if (1 <= len(args)) and isinstance(args[0], six.float_type):
+        if (1 <= len(args)) and isinstance(args[0], float):
             args = (str(args[0]),) + args[1:]
         try:
             rv = super(decimal, cls).__new__(cls, *args, **kw)
@@ -184,7 +187,7 @@ class decimal (basis.simpleTypeDefinition, python_decimal.Decimal, basis._Repres
 
 _PrimitiveDatatypes.append(decimal)
 
-class _fp (basis.simpleTypeDefinition, six.float_type, basis._NoNullaryNonNillableNew_mixin):
+class _fp (basis.simpleTypeDefinition, float, basis._NoNullaryNonNillableNew_mixin):
     _XsdBaseType = anySimpleType
 
     @classmethod
@@ -210,6 +213,7 @@ class double (_fp):
 _PrimitiveDatatypes.append(double)
 
 import datetime
+
 
 class duration (basis.simpleTypeDefinition, datetime.timedelta, basis._RepresentAsXsdLiteral_mixin):
     """XMLSchema datatype U{duration<http://www.w3.org/TR/xmlschema-2/#duration>}.
@@ -273,8 +277,8 @@ class duration (basis.simpleTypeDefinition, datetime.timedelta, basis._Represent
 
                 fractional_seconds = 0.0
                 if match_map.get('fracsec') is not None:
-                    fractional_seconds = six.float_type('0%s' % (match_map['fracsec'],))
-                    usec = six.int_type(1000000 * fractional_seconds)
+                    fractional_seconds = float('0%s' % (match_map['fracsec'],))
+                    usec = int(1000000 * fractional_seconds)
                     if negative_duration:
                         kw['microseconds'] = - usec
                     else:
@@ -288,7 +292,7 @@ class duration (basis.simpleTypeDefinition, datetime.timedelta, basis._Represent
                     v = match_map.get(fn, 0)
                     if v is None:
                         v = 0
-                    data[fn] = six.int_type(v)
+                    data[fn] = int(v)
                     if fn in cls.__PythonFields:
                         if negative_duration:
                             kw[fn] = - data[fn]
@@ -322,7 +326,7 @@ class duration (basis.simpleTypeDefinition, datetime.timedelta, basis._Represent
         if not have_kw_update:
             rem_time = data.pop('seconds', 0)
             if (0 != (rem_time % 1)):
-                data['microseconds'] = data.pop('microseconds', 0) + six.int_type(1000000 * (rem_time % 1))
+                data['microseconds'] = data.pop('microseconds', 0) + int(1000000 * (rem_time % 1))
                 rem_time = rem_time // 1
             data['seconds'] = rem_time % 60
             rem_time = data.pop('minutes', 0) + (rem_time // 60)
@@ -425,11 +429,11 @@ class _PyXBDateTime_base (basis.simpleTypeDefinition, basis._RepresentAsXsdLiter
         kw = { }
         for (k, v) in six.iteritems(match_map):
             if (k in cls.__LexicalIntegerFields) and (v is not None):
-                kw[k] = six.int_type(v)
+                kw[k] = int(v)
         if '-' == match_map.get('negYear'):
             kw['year'] = - kw['year']
         if match_map.get('fracsec') is not None:
-            kw['microsecond'] = six.int_type(round(1000000 * six.float_type('0%s' % (match_map['fracsec'],))))
+            kw['microsecond'] = int(round(1000000 * float('0%s' % (match_map['fracsec'],))))
         else:
             # Discard any bogosity passed in by the caller
             kw.pop('microsecond', None)
@@ -749,22 +753,25 @@ class date (_PyXBDateOnly_base):
 
     @classmethod
     def XsdLiteral (cls, value):
+        # Create a copy of `value` using datetime baseclass
+        # This allows us to do datetime arithmetic on Python 3.8+
+        base_value = make_base_dt(value)
         # Work around strftime year restriction
         fmt = cls._Lexical_fmt
         rtz = value.xsdRecoverableTzinfo()
         if rtz is not None:
             # If the date is timezoned, convert it to UTC
-            value -= value.tzinfo.utcoffset(value)
-            value = value.replace(tzinfo=cls._UTCTimeZone)
+            base_value -= base_value.tzinfo.utcoffset(value)
+            base_value = base_value.replace(tzinfo=cls._UTCTimeZone)
         # Use the midpoint of the one-day interval to get the correct
         # month/day.
-        value += datetime.timedelta(minutes=cls.__MinutesPerHalfDay)
-        if value.year < 1900:
-            fmt = fmt.replace('%Y', '%04d' % (value.year,))
-            value = value.replace(year=1900)
+        base_value += datetime.timedelta(minutes=cls.__MinutesPerHalfDay)
+        if base_value.year < 1900:
+            fmt = fmt.replace('%Y', '%04d' % (base_value.year,))
+            base_value = base_value.replace(year=1900)
         if rtz is not None:
-            fmt += rtz.tzname(value)
-        return value.strftime(fmt)
+            fmt += rtz.tzname(base_value)
+        return base_value.strftime(fmt)
 
 _PrimitiveDatatypes.append(date)
 
@@ -1185,7 +1192,7 @@ class ENTITIES (basis.STD_list):
     _ItemType = ENTITY
 _ListDatatypes.append(ENTITIES)
 
-class integer (basis.simpleTypeDefinition, six.long_type, basis._NoNullaryNonNillableNew_mixin):
+class integer (basis.simpleTypeDefinition, int, basis._NoNullaryNonNillableNew_mixin):
     """XMLSchema datatype U{integer<http://www.w3.org/TR/xmlschema-2/#integer>}."""
     _XsdBaseType = decimal
     _ExpandedName = pyxb.namespace.XMLSchema.createExpandedName('integer')
@@ -1211,7 +1218,7 @@ class long (integer):
     _ExpandedName = pyxb.namespace.XMLSchema.createExpandedName('long')
 _DerivedDatatypes.append(long)
 
-class int (basis.simpleTypeDefinition, six.int_type, basis._NoNullaryNonNillableNew_mixin):
+class int (basis.simpleTypeDefinition, int, basis._NoNullaryNonNillableNew_mixin):
     """XMLSchema datatype U{int<http://www.w3.org/TR/xmlschema-2/#int>}."""
     _XsdBaseType = long
     _ExpandedName = pyxb.namespace.XMLSchema.createExpandedName('int')
@@ -1264,6 +1271,7 @@ class positiveInteger (nonNegativeInteger):
 _DerivedDatatypes.append(positiveInteger)
 
 from . import content
+
 
 class anyType (basis.complexTypeDefinition):
     """XMLSchema datatype U{anyType<http://www.w3.org/TR/2001/REC-xmlschema-1-20010502/#key-urType>}."""

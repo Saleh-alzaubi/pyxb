@@ -17,6 +17,7 @@
 Namespaces<http://www.w3.org/TR/2006/REC-xml-names-20060816/index.html>}."""
 
 import logging
+
 import pyxb
 import pyxb.utils.utility
 from pyxb.namespace import archive, utility
@@ -346,7 +347,7 @@ def ResolveSiblingNamespaces (sibling_namespaces):
             raise pyxb.LogicError('Unexpected external dependency in sibling namespaces: %s' % (six.u('\n  ').join( [six.text_type(_ns) for _ns in need_resolved_set ]),))
         last_state = state
 
-@six.python_2_unicode_compatible
+
 class NamespaceContext (object):
     """Records information associated with namespaces at a DOM node.
     """

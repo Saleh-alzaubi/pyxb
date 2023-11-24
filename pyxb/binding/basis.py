@@ -16,14 +16,15 @@
 """This module contains support classes from which schema-specific bindings
 inherit, and that describe the content models of those schema."""
 
-import logging
 import collections
+import decimal
+import logging
 import xml.dom
+
 import pyxb
-from pyxb.utils import domutils, utility, six
 import pyxb.namespace
 from pyxb.namespace.builtin import XMLSchema_instance as XSI
-import decimal
+from pyxb.utils import domutils, six, utility
 
 _log = logging.getLogger(__name__)
 
@@ -387,7 +388,7 @@ class _TypeBinding_mixin (utility.Locatable_mixin):
 
         # See if we have a numeric type that needs to be cast across the
         # numeric hierarchy.  int to long is the *only* conversion we accept.
-        if isinstance(value, int) and issubclass(cls, six.long_type):
+        if isinstance(value, int) and issubclass(cls, int):
             return cls(value)
 
         # Same, but for boolean, which Python won't let us subclass
@@ -1163,7 +1164,7 @@ class simpleTypeDefinition (_TypeBinding_mixin, utility._DeconflictSymbols_mixin
             raise pyxb.SimpleTypeValueError(cls, value)
         value_class = cls
         if issubclass(cls, STD_list):
-            if not isinstance(value, collections.Iterable):
+            if not isinstance(value, collections.abc.Iterable):
                 raise pyxb.SimpleTypeValueError(cls, value)
             for v in value:
                 if not cls._ItemType._IsValidValue(v):
@@ -1313,7 +1314,7 @@ class STD_union (simpleTypeDefinition):
         return cls._ValidatedMember(value).xsdLiteral()
 
 
-class STD_list (simpleTypeDefinition, six.list_type):
+class STD_list (simpleTypeDefinition, list):
     """Base class for collection datatypes.
 
     This class descends from the Python list type, and incorporates
@@ -1363,7 +1364,7 @@ class STD_list (simpleTypeDefinition, six.list_type):
             if isinstance(arg1, six.string_types):
                 args = (arg1.split(),) + args[1:]
                 arg1 = args[0]
-            if isinstance(arg1, collections.Iterable):
+            if isinstance(arg1, collections.abc.Iterable):
                 new_arg1 = [ cls._ValidatedItem(_v, kw) for _v in arg1 ]
                 args = (new_arg1,) + args[1:]
         super_fn = getattr(super(STD_list, cls), '_ConvertArguments_vx', lambda *a,**kw: args)
@@ -1646,7 +1647,7 @@ class element (utility._DeconflictSymbols_mixin, _DynamicCreate_mixin):
             return self.__defaultValue
         is_plural = kw.pop('is_plural', False)
         if is_plural:
-            if not isinstance(value, collections.Iterable):
+            if not isinstance(value, collections.abc.Iterable):
                 raise pyxb.SimplePluralValueError(self.typeDefinition(), value)
             return [ self.compatibleValue(_v) for _v in value ]
         compValue = self.typeDefinition()._CompatibleValue(value, **kw);

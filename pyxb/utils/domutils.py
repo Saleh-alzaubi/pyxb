@@ -21,10 +21,9 @@ import xml.dom
 import pyxb
 import pyxb.namespace
 import pyxb.namespace.resolution
-import pyxb.utils.saxutils
 import pyxb.utils.saxdom
+import pyxb.utils.saxutils
 from pyxb.utils import six
-from pyxb.utils.six.moves import xrange
 
 _log = logging.getLogger(__name__)
 
@@ -393,7 +392,7 @@ class BindingDOMSupport (object):
         handles any special cases such as QName values where the lexical
         representation cannot be done in isolation of external information
         such as namespace declarations."""
-        from pyxb.binding.basis import simpleTypeDefinition, STD_list
+        from pyxb.binding.basis import STD_list, simpleTypeDefinition
         if isinstance(value, pyxb.namespace.ExpandedName):
             return self.qnameAsText(value, enable_default_namespace=enable_default_namespace)
         if isinstance(value, STD_list):
@@ -536,7 +535,7 @@ class BindingDOMSupport (object):
             (ns_uri, node_name) = self._makeURINodeNamePair(node)
             clone_node = docnode.createElementNS(ns_uri, node_name)
             attrs = node.attributes
-            for ai in xrange(attrs.length):
+            for ai in range(attrs.length):
                 clone_node.setAttributeNodeNS(self._deepClone(attrs.item(ai), docnode))
             for child in node.childNodes:
                 clone_node.appendChild(self._deepClone(child, docnode))

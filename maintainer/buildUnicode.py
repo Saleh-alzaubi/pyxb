@@ -27,10 +27,12 @@ C{pyxb/utils/unicode_data.py}.
 """
 
 from __future__ import print_function
-import textwrap
+
 import re
+import textwrap
+
 from pyxb.utils import six
-from pyxb.utils.six.moves import xrange
+
 
 def countCodepoints (codepoints):
     count = 0
@@ -46,7 +48,7 @@ def condenseCodepoints (codepoints):
     codepoints = list(codepoints)
     codepoints.sort()
     range_min = None
-    for ri in xrange(len(codepoints)):
+    for ri in range(len(codepoints)):
         codepoint = codepoints[ri]
         if not isinstance(codepoint, tuple):
             if range_min is None:

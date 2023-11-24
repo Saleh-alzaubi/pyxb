@@ -23,13 +23,14 @@ value spaces.
 
 """
 
+import decimal
 import logging
 import re
-import decimal
+
 import pyxb
-from . import datatypes
-from . import basis
-from pyxb.utils import utility, six
+from pyxb.utils import six, utility
+
+from . import basis, datatypes
 
 _log = logging.getLogger(__name__)
 
@@ -358,6 +359,7 @@ class CF_maxLength (ConstrainingFacet, _Fixed_mixin):
 
 import pyxb.utils.xmlre
 
+
 class _PatternElement (utility.PrivateTransient_mixin):
     """This class represents individual patterns that appear within a CF_pattern collection."""
 
@@ -441,7 +443,7 @@ class CF_pattern (ConstrainingFacet, _CollectionFacet_mixin):
                 return True
         return False
 
-@six.python_2_unicode_compatible
+
 class _EnumerationElement (object):
     """This class represents individual values that appear within a
     L{CF_enumeration} collection."""
@@ -716,7 +718,7 @@ class CF_totalDigits (ConstrainingFacet, _Fixed_mixin):
         match = False
         v = None
         while (n <= self.value()) and (not match):
-            v = six.long_type(value * scale)
+            v = int(value * scale)
             match = ((value * scale) == v)
             if self.value() == n:
                 break
@@ -744,7 +746,7 @@ class CF_fractionDigits (ConstrainingFacet, _Fixed_mixin):
         n = 0
         scale = 1
         while n <= self.value():
-            if ((value * scale) == six.long_type(value * scale)):
+            if ((value * scale) == int(value * scale)):
                 return True
             n += 1
             scale *= 10

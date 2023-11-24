@@ -57,11 +57,11 @@ not work: instead the subconfiguration with its counter values must be
 retained between matches.
 """
 
-import operator
 import functools
 import logging
+import operator
+
 from pyxb.utils import six
-from pyxb.utils.six.moves import xrange
 
 log_ = logging.getLogger(__name__)
 
@@ -1250,7 +1250,7 @@ class Automaton (object):
         rv.append('states = %s' % (' '.join(map(str, self.__states))))
         for s in self.__states:
             if s.subAutomata is not None:
-                for i in xrange(len(s.subAutomata)):
+                for i in range(len(s.subAutomata)):
                     rv.append('SA %s.%u is %x:\n  ' % (str(s), i, id(s.subAutomata[i])) + '\n  '.join(str(s.subAutomata[i]).split('\n')))
         rv.append('counters = %s' % (' '.join(map(str, self.__counterConditions))))
         rv.append('initial = %s' % (' ; '.join([ '%s on %s' % (_s, _s.symbol) for _s in filter(lambda _s: _s.isInitial, self.__states)])))
@@ -1612,7 +1612,7 @@ class MultiTermNode (Node):
     def _walkTermTree (self, position, pre, post, arg):
         if pre is not None:
             pre(self, position, arg)
-        for c in xrange(len(self.__terms)):
+        for c in range(len(self.__terms)):
             self.__terms[c]._walkTermTree(position + (c,), pre, post, arg)
         if post is not None:
             post(self, position, arg)
@@ -1738,13 +1738,13 @@ class Choice (MultiTermNode):
 
     def _first (self):
         rv = set()
-        for c in xrange(len(self.terms)):
+        for c in range(len(self.terms)):
             rv.update([ (c,) + _fc for _fc in self.terms[c].first])
         return rv
 
     def _last (self):
         rv = set()
-        for c in xrange(len(self.terms)):
+        for c in range(len(self.terms)):
             rv.update([ (c,) + _lc for _lc in self.terms[c].last])
         return rv
 
@@ -1756,7 +1756,7 @@ class Choice (MultiTermNode):
 
     def _follow (self):
         rv = {}
-        for c in xrange(len(self.terms)):
+        for c in range(len(self.terms)):
             for (q, transition_set) in six.iteritems(self.terms[c].follow):
                 pp = (c,)
                 rv[pp + q] = self._PosConcatTransitionSet(pp, transition_set)
@@ -1813,11 +1813,11 @@ class Sequence (MultiTermNode):
 
     def _follow (self):
         rv = {}
-        for c in xrange(len(self.terms)):
+        for c in range(len(self.terms)):
             pp = (c,)
             for (q, transition_set) in six.iteritems(self.terms[c].follow):
                 rv[pp + q] = self._PosConcatTransitionSet(pp, transition_set)
-        for c in xrange(len(self.terms)-1):
+        for c in range(len(self.terms)-1):
             t = self.terms[c]
             pp = (c,)
             # Link from the last of one term to the first of the next term.
@@ -1889,7 +1889,7 @@ class All (MultiTermNode, LeafNode):
         if 1 == len(terms):
             return terms[0]
         disjuncts = []
-        for i in xrange(len(terms)):
+        for i in range(len(terms)):
             n = terms[i]
             rem = map(lambda _s: _s.clone(), terms[:i] + terms[i+1:])
             disjuncts.append(Sequence(n, cls.CreateTermTree(*rem)))

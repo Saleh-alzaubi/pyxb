@@ -1,16 +1,18 @@
 # -*- coding: utf-8 -*-
 import logging
+
 if __name__ == '__main__':
     logging.basicConfig()
 _log = logging.getLogger(__name__)
+import os.path
+import xml.dom.minidom as minidom
+from xml.dom import Node
+
 import pyxb.binding.generate
+import pyxb.namespace
 import pyxb.utils.domutils
 from pyxb.utils import six
-from xml.dom import Node
-import pyxb.namespace
-import xml.dom.minidom as minidom
 
-import os.path
 xst = '''<?xml version="1.0" encoding="utf-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
   <xs:simpleType name="bigpos">
@@ -40,16 +42,16 @@ code = pyxb.binding.generate.GeneratePython(schema_text=xst)
 rv = compile(code, 'test', 'exec')
 eval(rv)
 
-from pyxb.exceptions_ import *
-
+import copy
 import unittest
 
-import copy
+from pyxb.exceptions_ import *
+
 
 class TestIssue22 (unittest.TestCase):
 
-    SMALL = (six.long_type(1) << 63)
-    LARGE = (six.long_type(1) << 63) + 2
+    SMALL = (int(1) << 63)
+    LARGE = (int(1) << 63) + 2
 
     def testBigPos (self):
         self.assertEqual(self.SMALL, bigpos._CF_minInclusive.value())

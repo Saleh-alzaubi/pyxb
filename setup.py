@@ -1,25 +1,25 @@
 #!/usr/bin/env python
 
 from __future__ import print_function
+
 import sys
 
 # The current version of the system.  Format is #.#.#[-DEV].
-version = '1.2.6'
+version = '2.0.0'
 
-# Require Python 2.6 or higher or Python 3.1 or higher
-if (sys.version_info[:2] < (2, 6)) or ((sys.version_info[0] == 3) and sys.version_info[:2] < (3, 1)):
+# Python 3.3 or higher
+if sys.version_info[:2] < (3, 3):
     raise ValueError('''PyXB requires:
-  Python2 version 2.6 or later; or
-  Python3 version 3.1 or later
+  Python3 version 3.3 or later
 (You have %s.)''' % (sys.version,))
 
-import os
-import stat
-import re
 import datetime
 import logging
+import os
+import re
+import stat
+from distutils.core import Command, setup
 
-from distutils.core import setup, Command
 
 # Stupid little command to automatically update the version number
 # where it needs to be updated.
@@ -102,8 +102,8 @@ class test (Command):
         number = 0
         import sys
         import traceback
-        import unittest
         import types
+        import unittest
 
         # Import each test into its own module, then add the test
         # cases in it to a complete suite.
@@ -169,6 +169,7 @@ class test (Command):
 
 import glob
 import sys
+
 import pyxb.utils.utility
 
 packages = [
@@ -254,6 +255,7 @@ The major goals of PyXB are:
 ''',
       provides=[ 'PyXB' ],
       packages=packages,
+      include_package_data=True,
       package_data=package_data,
       # I normally keep these in $purelib, but distutils won't tell me where that is.
       # We don't need them in the installation anyway.
